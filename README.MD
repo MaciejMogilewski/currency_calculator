@@ -1,1 +1,1 @@
-# currency calculator
+# Currency Calculator
