@@ -1,5 +1,6 @@
 import {generateTag} from "./helpers.js";
 import currencyCodes from "./constants.js";
+import {getData} from "./api.js";
 
 function generateForm() {
     const fragment = document.createDocumentFragment();
@@ -74,7 +75,16 @@ function generateForm() {
         tagAttrs: [{type: 'type', value: 'submit'}],
         tagEvents: [{
             type: 'click',
-            cb: () => {
+            cb: (event) => {
+                event.preventDefault();
+                const currencyFrom = document.querySelector('#currencyInput');
+                const currencyTo = document.querySelector('#currencyOutput');
+                const resultsRef = document.querySelector('.results');
+
+                Promise.all([getData(currencyFrom.value), getData(currencyTo.value)]).then((data) => {
+                    const result = data[0].rates[0].mid / data[1].rates[0].mid * parseInt(inputAmountRef.value);
+                    resultsRef.innerText = `Za ${inputAmountRef.value} ${data[0].currency} możesz se kupić ${result.toFixed(4)} ${data[1].currency}`
+                })
             }
         }]
     });
